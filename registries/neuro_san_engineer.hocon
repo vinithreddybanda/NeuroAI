@@ -1,0 +1,135 @@
+{
+  "llm_config": {
+    "fallbacks": [
+      
+      {
+        "class": "secondbrain_llm.OpenAIFallback",
+        "model": "gpt-5.4-mini",
+        "temperature": 0.32,
+        "max_retries": 0,
+        "max_tokens": 1200
+      },
+      {
+        "class": "secondbrain_llm.GeminiFallback",
+        "model": "gemini-3.8-flash",
+        "max_tokens": 1200
+      },
+      {
+        "class": "secondbrain_llm.GroqKey1",
+        "model": "openai/gpt-oss-120b",
+        "temperature": 0.35,
+        "max_retries": 0
+      },
+      {
+        "class": "secondbrain_llm.GroqKey2",
+        "model": "openai/gpt-oss-120b",
+        "temperature": 0.35,
+        "max_retries": 0
+      }
+    ]
+  },
+  "max_steps": 28,
+  "max_execution_seconds": 60,
+  "request_timeout_seconds": 30,
+  "max_attempts": 1,
+  "metadata": {
+    "description": "Beast-mode engineering control plane with indexed GitHub/Sentry access, minimum-call execution, direct fast paths, and webhook notifications.",
+    "tags": ["github", "sentry", "discord", "indexed", "fast", "divide-and-conquer", "write-capable"]
+  },
+  "tools": [
+    {
+      "name": "engineering_frontman",
+      "function": {"description":"Senior engineering lead. Routes simple requests directly to the universal GitHub/Sentry tools, and uses specialists only for real multi-domain investigations.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions": """
+You are the senior engineering lead for vinithreddybanda/activities.
+
+Use the smallest useful action:
+- One factual request -> one direct capability call.
+- Code/search question -> github_beast.
+- Sentry/runtime question -> sentry_beast.
+- GitHub mutation -> github_control_beast, then verify.
+- Discord send -> discord_notify directly.
+- Complex independent work -> delegate only the minimum necessary specialists, then stop.
+
+Context discipline:
+- Never load the whole repository/tree/file set unless explicitly requested.
+- Never request broad history when one commit/resource answers the question.
+- Ask the user for a missing identifier when it is genuinely required instead of guessing or scanning everything.
+- Preserve exact user intent. Do not invent facts, URLs, SHAs, or successful writes.
+- Return concise evidence and the requested result, not internal traces.
+
+Known repository: vinithreddybanda/activities.
+""",
+      "tools": [
+        "fast_path","repo_scout","code_investigator","history_analyst","runtime_analyst","ci_investigator",
+        "risk_reviewer","change_guardian","release_operator","team_communicator","reviewer",
+        "github_beast","github_control_beast","sentry_beast","discord_notify"
+      ]
+    },
+    {
+      "name":"repo_scout",
+      "function":{"description":"Repository/access specialist with the full GitHub beast tool.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Handle exact repository/access questions with github_beast. Use one call when possible. Do not hydrate broad data unless requested. Never call another specialist.""",
+      "tools":["github_beast"]
+    },
+    {
+      "name":"code_investigator",
+      "function":{"description":"Source-code specialist with GitHub search/file/tree access.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Investigate code with github_beast. Exact path -> file; unknown location -> search_code. Read only the files needed. Stop when evidence is sufficient. Never call another specialist.""",
+      "tools":["github_beast"]
+    },
+    {
+      "name":"history_analyst",
+      "function":{"description":"Git history specialist for commits, changed files, authors, dates, PRs and issue history.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Handle Git history with the smallest github_beast operation. Latest -> commits limit=1; second-last -> limit=2; detail only when requested. Never loop or call another specialist.""",
+      "tools":["github_beast"]
+    },
+    {
+      "name":"runtime_analyst",
+      "function":{"description":"Sentry specialist for organizations, projects, issues, events, releases, members and runtime evidence.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Handle Sentry questions with the smallest sentry_beast query. Query only the requested org/project/event/issue/timeframe. Never call another specialist.""",
+      "tools":["sentry_beast"]
+    },
+    {
+      "name":"ci_investigator",
+      "function":{"description":"GitHub Actions and delivery specialist.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Handle GitHub Actions questions with one targeted github_beast operation. Return the live run evidence. Do not run local builds or call another specialist.""",
+      "tools":["github_beast"]
+    },
+    {
+      "name":"risk_reviewer",
+      "function":{"description":"Independent engineering risk reviewer using live GitHub evidence when necessary.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Review supplied evidence. Make at most one targeted github_beast call for a concrete gap. Give a practical risk judgement. Never call another specialist.""",
+      "tools":["github_beast"]
+    },
+    {
+      "name":"change_guardian",
+      "function":{"description":"Patch/change planner using the live repository source.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Turn verified evidence into the smallest change plan. Read only required GitHub files. Do not write. Return affected files, change, verification, rollback.""",
+      "tools":["github_beast"]
+    },
+    {
+      "name":"release_operator",
+      "function":{"description":"GitHub execution specialist with full write access.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Execute explicit user GitHub changes with github_control_beast. Writes are enabled by default regardless of .env. After each mutation, verify using github_beast. For create PR: branch -> file writes -> PR -> PR readback -> return exact URLs/SHA. Never invent success and never call another specialist.""",
+      "tools":["github_control_beast","github_beast"]
+    },
+    {
+      "name":"team_communicator",
+      "function":{"description":"Outbound Discord webhook specialist. Receive the communication mission, then send the requested content through the configured Discord webhook.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""You are the Discord communication specialist. The required mission contains the complete communication request. Extract the intended message from the mission and call discord_notify with operation=send and the message. If the mission explicitly requests an edit or delete and supplies a message ID, use those exact values. Never invent IDs. Webhook only. Keep the outgoing message concise. Return the tool result.""",
+      "tools":["discord_notify"]
+    },
+    {
+      "name":"reviewer",
+      "function":{"description":"Final peer reviewer for evidence-backed conclusions or proposed changes.","parameters":{"type":"object","properties":{"mission":{"type":"string"}},"required":["mission"]}},
+      "instructions":"""Challenge only important evidence. Use at most one targeted github_beast verification. Return solid/needs-one-fact/unsafe. Do not duplicate work.""",
+      "tools":["github_beast"]
+    },
+    {"name":"fast_path","function":{"description":"Code-first deterministic handler for common simple requests. Returns handled=false for normal LLM fallback.","parameters":{"type":"object","properties":{"mission":{"type":"string"},"owner":{"type":"string"},"repo":{"type":"string"}},"required":["mission"]}},"class":"neuro_tools.EngineeringFastPath"},
+    {"name":"github_beast","function":{"description":"Full GitHub capability: repository metadata/access, tree/files, code search, commits and commit files/dates/authors, PRs/reviews/files/comments, issues, releases, branches/tags, contributors/collaborators, Actions, deployments, traffic/statistics/community metrics, arbitrary REST, GraphQL, and a local SQLite retrieval index. The index caches observed metadata for fast repeated retrieval; live GitHub remains authoritative. Use the smallest operation that answers the request. Full API records stay indexed; model-facing results are compact by default.","parameters":{"type":"object","properties":{"operation":{"type":"string"},"owner":{"type":"string"},"repo":{"type":"string"},"path":{"type":"string"},"branch":{"type":"string"},"ref":{"type":"string"},"sha":{"type":"string"},"number":{"type":"integer"},"query":{"type":"string"},"limit":{"type":"integer"},"state":{"type":"string"},"method":{"type":"string"},"params":{"type":"object"},"body":{"type":"object"},"variables":{"type":"object"},"org":{"type":"string"}}}},"class":"neuro_tools.GitHubBeast"},
+    {"name":"github_control_beast","function":{"description":"Full GitHub write capability for branches, file create/update/delete, PR creation/merge, comments, and arbitrary authenticated REST writes. User has explicitly requested writes by default.","parameters":{"type":"object","properties":{"action":{"type":"string"},"owner":{"type":"string"},"repo":{"type":"string"},"branch":{"type":"string"},"base":{"type":"string"},"path":{"type":"string"},"content":{"type":"string"},"message":{"type":"string"},"title":{"type":"string"},"body":{"type":"string"},"head":{"type":"string"},"number":{"type":"integer"},"merge_method":{"type":"string"},"method":{"type":"string"},"params":{"type":"object"}}}},"class":"neuro_tools.GitHubControlBeast"},
+    {"name":"sentry_beast","function":{"description":"Full Sentry capability through scoped common operations plus arbitrary REST: orgs, projects, teams, issues, issue events, events, releases, members, integrations, and future endpoints the auth token permits.","parameters":{"type":"object","properties":{"operation":{"type":"string"},"org":{"type":"string"},"project":{"type":"string"},"issue_id":{"type":"string"},"event_id":{"type":"string"},"limit":{"type":"integer"},"method":{"type":"string"},"path":{"type":"string"},"params":{"type":"object"},"body":{"type":"object"}}}},"class":"neuro_tools.SentryBeast"},
+    {"name":"discord_notify","function":{"description":"Outbound Discord webhook execution. Supports send, edit and delete of webhook messages when message ID is known, plus embeds, username/avatar override and thread targeting. No bot.","parameters":{"type":"object","properties":{"operation":{"type":"string"},"message":{"type":"string"},"message_id":{"type":"string"},"embeds":{"type":"array","items":{"type":"object"}},"username":{"type":"string"},"avatar_url":{"type":"string"},"thread_id":{"type":"string"},"thread_name":{"type":"string"}},"required":["message"]}},"class":"neuro_tools.DiscordNotify"}
+  ]
+}
