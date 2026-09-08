@@ -1,0 +1,9 @@
+{
+    "llm_config": {
+        "fallbacks": [
+            { "model_name": "gpt-5.2" },
+            { "model_name": "claude-sonnet" },
+            { "model_name": "gemini-3-flash" }
+        ]
+    }
+}
